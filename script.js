@@ -1,4 +1,6 @@
 let board = [];
+let autoPlay = false;
+let intervalIndex = null;
 function initialize() {
     board = [];
     for (let i = 0; i < 4; i++) {
@@ -122,13 +124,8 @@ function scoreBoard(b) {
     let score = 0;
     let emptyCount = 0; 
     
-    const corner = [
-        // b[0][0],
-        // b[3][0],
-        // b[0][3],
-        // b[3][3]
-        b[3][0]
-    ]
+    let corner = [b[3][0]];
+    
     //lower score if highest tile not in corner 
     let maxTile = Math.max(...b.flat());
     if (corner.includes(maxTile)) {
@@ -137,14 +134,14 @@ function scoreBoard(b) {
         score -= 1000;
     }
     //raise score for empty squares
-    for (let i=0;i<4;i++){
-        for(let j=0;j<4;j++){
+    for (let i=0;i<3;i++){
+        for(let j=0;j<3;j++){
             if (b[i][j]===0){
                 emptyCount++;
             }
         }
     }
-    score += emptyCount * 150;
+    score += emptyCount * 75;
     //raise scores for smaller jumps between tiles , "smoothness"
     for (let i=0;i<4;i++){
         for(let j=0;j<4;j++){
@@ -230,7 +227,7 @@ function scoreBoard(b) {
     }
     //lower score if there are larger tiles on higher rows 
     let diff = 0;
-    for (let i =0;i<3;i++){
+    for (let i=0;i<3;i++){
         for (let j=0;j<4;j++){
             if (b[i][j] >= b[i+1][j]){
                 diff = b[i][j] - b[i+1][j]
@@ -242,7 +239,7 @@ function scoreBoard(b) {
     let latDiff = 0;
     for (let i=0;i<4;i++){
         if (i%2===0){ 
-            for (let j=0;j<3;j++) { 
+            for (let j=0;j<2;j++) { 
                 if (b[i][j+1] >= b[i][j]){
                     latDiff = b[i][j+1]-b[i][j];
                     score-=latDiff;
@@ -250,7 +247,7 @@ function scoreBoard(b) {
             }
         }
         if (i%2===1){
-            for (let j=0;j<3;j++) { 
+            for (let j=0;j<2;j++) { 
                 if (b[i][j+1] <= b[i][j]){
                     latDiff = b[i][j]-b[i][j+1];
                     score-=latDiff;    
@@ -260,8 +257,8 @@ function scoreBoard(b) {
     }
 return score;
 }
-function simulateMove (dir) {
-    let copy = board.map(row=>row.slice());
+function simulateMove (dir, inputBoard) {
+    let copy = inputBoard.map(row=>row.slice());
     switch(dir) {
         case ('left'): moveLeft(copy); break;
         case ('right'): moveRight(copy); break; 
@@ -277,23 +274,46 @@ let bestScore = -Infinity;
 let bestMove = null;
 
 //simulate moves and choose from the best move in two moves 
+//copy of chooseBestMove()
+// for (const dir of ['left','right','up','down']){
+//     const newBoard = simulateMove(dir);
+//     if (JSON.stringify(newBoard) === JSON.stringify(board)) continue;
+//     const currentScore = scoreBoard(newBoard);
+//     if (currentScore > bestScore) {
+//         bestScore = currentScore;
+//         bestMove = dir;
+//     }
+//     else if(currentScore === bestScore) {
+//         const currentEmpty = countEmptyTiles(newBoard);
+//         const bestEmpty = countEmptyTiles(simulateMove(bestMove));
+//         if (currentEmpty > bestEmpty)
+//         bestScore = currentScore;
+//         bestMove = dir;
+//     }
+// }
 
-for (const dir of ['left','right','up','down']){
-    const newBoard = simulateMove(dir);
+
+//CURRENT TASK try to pick bestMove out of the 16 possible boards from the next two moves
+for (const dir1 of ['left','right','up','down']){
+    const newBoard = simulateMove(dir1, board);
     if (JSON.stringify(newBoard) === JSON.stringify(board)) continue;
-    const currentScore = scoreBoard(newBoard);
-    if (currentScore > bestScore) {
-        bestScore = currentScore;
-        bestMove = dir;
+
+    let secondBestScore = -Infinity;
+
+        for(const dir2 of ['left','right','up','down']){
+            const newerBoard = simulateMove(dir2, newBoard);
+            if (JSON.stringify(newerBoard) === JSON.stringify(newBoard)) continue;
+
+            const simScore = scoreBoard(newerBoard);
+            if (simScore > secondBestScore) {
+                secondBestScore = simScore;
+            }
+        }
+        if (secondBestScore > bestScore) {
+            bestScore = secondBestScore;
+            bestMove = dir1;
+        }
     }
-    else if(currentScore === bestScore) {
-        const currentEmpty = countEmptyTiles(newBoard);
-        const bestEmpty = countEmptyTiles(simulateMove(bestMove));
-        if (currentEmpty > bestEmpty)
-        bestScore = currentScore;
-        bestMove = dir;
-    }
-}
 return bestMove; 
 }
 function playBestMove(bestMove) {
@@ -371,8 +391,7 @@ document.addEventListener('keydown',(event) => {
         renderBoard();
         break;
     }
-    let autoPlay = false;
-    let intervalIndex = null;
+
     if (event.key === ' ' && event.ctrlKey === true) {
         if (!autoPlay) {
             autoPlay = true;
