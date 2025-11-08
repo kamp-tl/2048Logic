@@ -127,134 +127,134 @@ function scoreBoard(b) {
     let corner = [b[3][0]];
     
     //lower score if highest tile not in corner 
-    let maxTile = Math.max(...b.flat());
-    if (corner.includes(maxTile)) {
-        score += 0;
-    } else {
-        score -= 1000;
-    }
-    //raise score for empty squares
-    for (let i=0;i<3;i++){
-        for(let j=0;j<3;j++){
-            if (b[i][j]===0){
-                emptyCount++;
-            }
-        }
-    }
-    score += emptyCount * 105;
-    //raise scores for smaller jumps between tiles , "smoothness"
-    for (let i=0;i<4;i++){
-        for(let j=0;j<4;j++){
-            if (i<3){score -= Math.abs(b[i][j] - b[i+1][j])}
-            if (j<3){score -= Math.abs(b[i][j] - b[i][j+1])}
-        }
-    }
-    //raise score to flow towards the bottom left
-    // for (let i=0;i<4;i++){
-    //     if (i===0||i===2){
-    //         if (b[i].includes(0)){
-    //             for (let j=0;j<3;j++){
-    //                 let current = b[i][j];
-    //                 let next = b[i][j+1];
-    //                 if (current < next) {
-    //                     score -= (next - current);
-    //                 }
-    //                 else if (current===next){
-    //                     score -= (next + current);
-    //                 }
-    //             }
+    // let maxTile = Math.max(...b.flat());
+    // if (corner.includes(maxTile)) {
+    //     score += 0;
+    // } else {
+    //     score -= 1000;
+    // }
+    // //raise score for empty squares
+    // for (let i=0;i<3;i++){
+    //     for(let j=0;j<3;j++){
+    //         if (b[i][j]===0){
+    //             emptyCount++;
     //         }
-    //         else {
-    //             for (let j=0;j<3;j++){
-    //                 let current = b[i][j];
-    //                 let next = b[i][j+1];
-    //                 if (current > next) {
-    //                 score -= (next - current);
-    //                 }
-    //                 else if (current===next){
-    //                     score -= (next+ current);
-    //                 }
+    //     }
+    // }
+    // score += emptyCount * 100;
+    // //raise scores for smaller jumps between tiles , "smoothness"
+    // for (let i=0;i<4;i++){
+    //     for(let j=0;j<4;j++){
+    //         if (i<3){score -= Math.abs(b[i][j] - b[i+1][j])}
+    //         if (j<3){score -= Math.abs(b[i][j] - b[i][j+1])}
+    //     }
+    // }
+    // //raise score to flow towards the bottom left
+    // // for (let i=0;i<4;i++){
+    // //     if (i===0||i===2){
+    // //         if (b[i].includes(0)){
+    // //             for (let j=0;j<3;j++){
+    // //                 let current = b[i][j];
+    // //                 let next = b[i][j+1];
+    // //                 if (current < next) {
+    // //                     score -= (next - current);
+    // //                 }
+    // //                 else if (current===next){
+    // //                     score -= (next + current);
+    // //                 }
+    // //             }
+    // //         }
+    // //         else {
+    // //             for (let j=0;j<3;j++){
+    // //                 let current = b[i][j];
+    // //                 let next = b[i][j+1];
+    // //                 if (current > next) {
+    // //                 score -= (next - current);
+    // //                 }
+    // //                 else if (current===next){
+    // //                     score -= (next+ current);
+    // //                 }
+    // //             }
+    // //         }
+    // //     }
+        
+    // // }
+    // //follow the snake 
+    // let snakePath = [
+    //     12, 13, 14, 15,
+    //     11, 10, 9, 8,
+    //     4, 5, 6, 7,
+    //     3, 2, 1, 0
+    // ]
+    // let flatBoard = b.flat() 
+    // let rearranged = snakePath.map(index => flatBoard[index])
+    // for(let i=0;i<15;i++){
+    //     if (rearranged[i] > rearranged[i+1]) {
+    //         score += (2*rearranged[i])
+    //     }
+    //     else {
+    //         score -= (rearranged[i+1])
+    //     }
+    // }
+    // for (let i=0;i<4;i++){
+    //     if(i%2===0){
+    //         for (let j=0;j<4;j++){
+    //             if(b[i][j]<=b[i][j+1]){
+    //                 score-=b[i][j+1]-b[i][j]
+    //             }  
+    //         }
+    //         }
+        
+    //     if(i%2===1){
+    //         for (let j=0;j<4;j++){
+    //             if(b[i][j]<=b[i][j+1]){
+    //                 score+=b[i][j+1]-b[i][j]
     //             }
     //         }
     //     }
-        
+    //     if(b[0][3]!=0 && b[0][3] != b[0][2]){
+    //             corner[0] = [b[1][3]]
+    //     }
+    //     else if(b[1][0]!=0 && b[1][0] != b[1][1]){
+    //             corner[0] = [b[2][0]]
+    //     }
+    //     else if(b[2][3]!=0 && b[2][3] != b[2][2]){
+    //         corner[0] = [b[3][3]]
+    //     }
+    //     else {
+    //         corner[0] = [b[3][0]]
+    //     }
     // }
-    //follow the snake 
-    let snakePath = [
-        12, 13, 14, 15,
-        11, 10, 9, 8,
-        4, 5, 6, 7,
-        3, 2, 1, 0
-    ]
-    let flatBoard = b.flat() 
-    let rearranged = snakePath.map(index => flatBoard[index])
-    for(let i=0;i<15;i++){
-        if (rearranged[i] > rearranged[i+1]) {
-            score += (2*rearranged[i])
-        }
-        else {
-            score -= (rearranged[i+1])
-        }
-    }
-    for (let i=0;i<4;i++){
-        if(i%2===0){
-            for (let j=0;j<4;j++){
-                if(b[i][j]<=b[i][j+1]){
-                    score-=b[i][j+1]-b[i][j]
-                }  
-            }
-            }
-        
-        if(i%2===1){
-            for (let j=0;j<4;j++){
-                if(b[i][j]<=b[i][j+1]){
-                    score+=b[i][j+1]-b[i][j]
-                }
-            }
-        }
-        if(b[0][3]!=0 && b[0][3] != b[0][2]){
-                corner[0] = [b[1][3]]
-        }
-        else if(b[1][0]!=0 && b[1][0] != b[1][1]){
-                corner[0] = [b[2][0]]
-        }
-        else if(b[2][3]!=0 && b[2][3] != b[2][2]){
-            corner[0] = [b[3][3]]
-        }
-        else {
-            corner[0] = [b[3][0]]
-        }
-    }
-    //lower score if there are larger tiles on higher rows 
-    let diff = 0;
-    for (let i=0;i<3;i++){
-        for (let j=0;j<4;j++){
-            if (b[i][j] >= b[i+1][j]){
-                diff = b[i][j] - b[i+1][j]
-                score -= (diff);
-            }
-        }
-    }
-    //lower score if there are tiles in the wrong lateral
-    let latDiff = 0;
-    for (let i=0;i<4;i++){
-        if (i%2===0){ 
-            for (let j=0;j<2;j++) { 
-                if (b[i][j+1] >= b[i][j]){
-                    latDiff = b[i][j+1]-b[i][j];
-                    score-=latDiff;
-                }
-            }
-        }
-        if (i%2===1){
-            for (let j=0;j<2;j++) { 
-                if (b[i][j+1] <= b[i][j]){
-                    latDiff = b[i][j]-b[i][j+1];
-                    score-=latDiff;    
-                }
-            }
-        }
-    }
+    // //lower score if there are larger tiles on higher rows 
+    // let diff = 0;
+    // for (let i=0;i<3;i++){
+    //     for (let j=0;j<4;j++){
+    //         if (b[i][j] >= b[i+1][j]){
+    //             diff = b[i][j] - b[i+1][j]
+    //             score -= (diff);
+    //         }
+    //     }
+    // }
+    // //lower score if there are tiles in the wrong lateral
+    // let latDiff = 0;
+    // for (let i=0;i<4;i++){
+    //     if (i%2===0){ 
+    //         for (let j=0;j<2;j++) { 
+    //             if (b[i][j+1] >= b[i][j]){
+    //                 latDiff = b[i][j+1]-b[i][j];
+    //                 score-=latDiff;
+    //             }
+    //         }
+    //     }
+    //     if (i%2===1){
+    //         for (let j=0;j<2;j++) { 
+    //             if (b[i][j+1] <= b[i][j]){
+    //                 latDiff = b[i][j]-b[i][j+1];
+    //                 score-=latDiff;    
+    //             }
+    //         }
+    //     }
+    // }
 return score;
 }
 function simulateMove (dir, inputBoard) {
@@ -398,7 +398,7 @@ document.addEventListener('keydown',(event) => {
         intervalIndex = setInterval(() => {
             const bestMove = chooseBestMove()
             playBestMove(bestMove);
-        }, 15);
+        }, 200);
         }
         else {
             clearInterval(intervalIndex);
