@@ -141,7 +141,7 @@ function scoreBoard(b) {
             }
         }
     }
-    score += emptyCount * 75;
+    score += emptyCount * 105;
     //raise scores for smaller jumps between tiles , "smoothness"
     for (let i=0;i<4;i++){
         for(let j=0;j<4;j++){
