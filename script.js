@@ -127,59 +127,60 @@ function scoreBoard(b) {
     let corner = [b[3][0]];
     
     //lower score if highest tile not in corner 
-    // let maxTile = Math.max(...b.flat());
-    // if (corner.includes(maxTile)) {
-    //     score += 0;
-    // } else {
-    //     score -= 1000;
-    // }
-    // //raise score for empty squares
-    // for (let i=0;i<3;i++){
-    //     for(let j=0;j<3;j++){
-    //         if (b[i][j]===0){
-    //             emptyCount++;
-    //         }
     //     }
-    // }
-    // score += emptyCount * 100;
-    // //raise scores for smaller jumps between tiles , "smoothness"
-    // for (let i=0;i<4;i++){
-    //     for(let j=0;j<4;j++){
-    //         if (i<3){score -= Math.abs(b[i][j] - b[i+1][j])}
-    //         if (j<3){score -= Math.abs(b[i][j] - b[i][j+1])}
-    //     }
-    // }
-    // //raise score to flow towards the bottom left
-    // // for (let i=0;i<4;i++){
-    // //     if (i===0||i===2){
-    // //         if (b[i].includes(0)){
-    // //             for (let j=0;j<3;j++){
-    // //                 let current = b[i][j];
-    // //                 let next = b[i][j+1];
-    // //                 if (current < next) {
-    // //                     score -= (next - current);
-    // //                 }
-    // //                 else if (current===next){
-    // //                     score -= (next + current);
-    // //                 }
-    // //             }
-    // //         }
-    // //         else {
-    // //             for (let j=0;j<3;j++){
-    // //                 let current = b[i][j];
-    // //                 let next = b[i][j+1];
-    // //                 if (current > next) {
-    // //                 score -= (next - current);
-    // //                 }
-    // //                 else if (current===next){
-    // //                     score -= (next+ current);
-    // //                 }
-    // //             }
-    // //         }
-    // //     }
-        
-    // // }
-    // //follow the snake 
+    let maxTile = Math.max(...b.flat());
+    if (corner.includes(maxTile)) {
+        score += 0;
+    } else {
+        score -= 1000;
+    }
+    //raise score for empty squares
+    for (let i=0;i<3;i++){
+        for(let j=0;j<3;j++){
+            if (b[i][j]===0){
+                emptyCount++;
+            }
+        }
+    }
+    score += emptyCount * 100;
+    //raise scores for smaller jumps between tiles , "smoothness"
+    for (let i=0;i<4;i++){
+        for(let j=0;j<4;j++){
+            if (i<3){score -= Math.abs(b[i][j] - b[i+1][j])}
+            if (j<3){score -= Math.abs(b[i][j] - b[i][j+1])}
+        }
+    }
+    //raise score to flow towards the bottom left
+    for (let i=0;i<4;i++){
+        if (i===0||i===2){
+            if (b[i].includes(0)){
+                for (let j=0;j<3;j++){
+                    let current = b[i][j];
+                    let next = b[i][j+1];
+                    if (current < next) {
+                        score -= (next - current);
+                    }
+                    else if (current===next){
+                        score -= (next + current);
+                    }
+                }
+            }
+            else {
+                for (let j=0;j<3;j++){
+                    let current = b[i][j];
+                    let next = b[i][j+1];
+                    if (current > next) {
+                    score -= (next - current);
+                    }
+                    else if (current===next){
+                        score -= (next+ current);
+                    }
+                }
+            }
+        }
+    }   
+
+    //follow the snake 
     // let snakePath = [
     //     12, 13, 14, 15,
     //     11, 10, 9, 8,
@@ -275,45 +276,46 @@ let bestMove = null;
 
 //simulate moves and choose from the best move in two moves 
 //copy of chooseBestMove()
-// for (const dir of ['left','right','up','down']){
-//     const newBoard = simulateMove(dir);
-//     if (JSON.stringify(newBoard) === JSON.stringify(board)) continue;
-//     const currentScore = scoreBoard(newBoard);
-//     if (currentScore > bestScore) {
-//         bestScore = currentScore;
-//         bestMove = dir;
-//     }
-//     else if(currentScore === bestScore) {
-//         const currentEmpty = countEmptyTiles(newBoard);
-//         const bestEmpty = countEmptyTiles(simulateMove(bestMove));
-//         if (currentEmpty > bestEmpty)
-//         bestScore = currentScore;
-//         bestMove = dir;
-//     }
-// }
+for (const dir of ['left','right','up','down']){
+    const newBoard = simulateMove(dir,board);
+    if (JSON.stringify(newBoard) === JSON.stringify(board)) continue;
+    const currentScore = scoreBoard(newBoard);
+    if (currentScore > bestScore) {
+        bestScore = currentScore;
+        bestMove = dir;
+    }
+    else if(currentScore === bestScore) {
+        const currentEmpty = countEmptyTiles(newBoard);
+        const bestEmpty = countEmptyTiles(simulateMove(bestMove,board));
+        if (currentEmpty > bestEmpty)
+        bestScore = currentScore;
+        bestMove = dir;
+    }
+
+}
 
 
 //CURRENT TASK try to pick bestMove out of the 16 possible boards from the next two moves
-for (const dir1 of ['left','right','up','down']){
-    const newBoard = simulateMove(dir1, board);
-    if (JSON.stringify(newBoard) === JSON.stringify(board)) continue;
+// for (const dir1 of ['left','right','up','down']){
+//     const newBoard = simulateMove(dir1, board);
+//     if (JSON.stringify(newBoard) === JSON.stringify(board)) continue;
 
-    let secondBestScore = -Infinity;
+//     let secondBestScore = -Infinity;
 
-        for(const dir2 of ['left','right','up','down']){
-            const newerBoard = simulateMove(dir2, newBoard);
-            if (JSON.stringify(newerBoard) === JSON.stringify(newBoard)) continue;
+//         for(const dir2 of ['left','right','up','down']){
+//             const newerBoard = simulateMove(dir2, newBoard);
+//             if (JSON.stringify(newerBoard) === JSON.stringify(newBoard)) continue;
 
-            const simScore = scoreBoard(newerBoard);
-            if (simScore > secondBestScore) {
-                secondBestScore = simScore;
-            }
-        }
-        if (secondBestScore > bestScore) {
-            bestScore = secondBestScore;
-            bestMove = dir1;
-        }
-    }
+//             const simScore = scoreBoard(newerBoard);
+//             if (simScore > secondBestScore) {
+//                 secondBestScore = simScore;
+//             }
+//         }
+//         if (secondBestScore > bestScore) {
+//             bestScore = secondBestScore;
+//             bestMove = dir1;
+//         }
+//     }
 return bestMove; 
 }
 function playBestMove(bestMove) {
@@ -398,7 +400,12 @@ document.addEventListener('keydown',(event) => {
         intervalIndex = setInterval(() => {
             const bestMove = chooseBestMove()
             playBestMove(bestMove);
-        }, 200);
+            console.log(bestMove)
+            if(countEmptyTiles(board) === 0 && bestMove === null) {
+                clearInterval(intervalIndex)
+            }
+        }, 20);
+
         }
         else {
             clearInterval(intervalIndex);
