@@ -127,7 +127,6 @@ function scoreBoard(b) {
     let corner = [b[3][0]];
     
     //lower score if highest tile not in corner 
-    //     }
     let maxTile = Math.max(...b.flat());
     if (corner.includes(maxTile)) {
         score += 0;
