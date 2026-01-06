@@ -131,7 +131,7 @@ function scoreBoard(b) {
     if (corner.includes(maxTile)) {
         score += 0;
     } else {
-        score -= 1000;
+        score -= 1500;
     }
     //raise score for empty squares
     for (let i=0;i<3;i++){
